@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Digital Economy in Global Diffusion</title>
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0a0e1a;
+            --surface: #111827;
+            --surface-2: #1a2236;
+            --border: #1e2a42;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.15);
+            --green: #10b981;
+            --purple: #8b5cf6;
+            --orange: #f59e0b;
+            --pink: #ec4899;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Animated background grid */
+        .bg-grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 80px 24px;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 32px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 6vw, 4.2rem);
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+
+        h1 .gradient {
+            background: linear-gradient(135deg, var(--accent), var(--purple), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 680px;
+            margin-bottom: 48px;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            width: 100%;
+            max-width: 750px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px 16px;
+            text-align: center;
+        }
+
+        .stat-card .num {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .stat-card .label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .stat-card:nth-child(1) .num { color: var(--accent); }
+        .stat-card:nth-child(2) .num { color: var(--green); }
+        .stat-card:nth-child(3) .num { color: var(--purple); }
+        .stat-card:nth-child(4) .num { color: var(--orange); }
+
+        /* Scroll indicator */
+        .scroll-hint {
+            margin-top: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            animation: bob 2s ease-in-out infinite;
+        }
+
+        @keyframes bob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(8px); }
+        }
+
+        .scroll-hint svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--text-muted);
+        }
+
+        /* Sections */
+        section {
+            padding: 100px 0;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .section-label .line {
+            width: 32px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        h2 {
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: -0.01em;
+        }
+
+        .section-intro {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 720px;
+            margin-bottom: 48px;
+        }
+
+        /* Content card */
+        .content-block {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 48px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--purple));
+            border-radius: 20px 20px 0 0;
+        }
+
+        .content-block h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .content-block p {
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            font-size: 1.02rem;
+        }
+
+        .content-block p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Pillar grid */
+        .pillar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .pillar {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px 28px;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .pillar:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+        }
+
+        .pillar-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .pillar:nth-child(1) .pillar-icon { background: rgba(59,130,246,0.12); }
+        .pillar:nth-child(2) .pillar-icon { background: rgba(16,185,129,0.12); }
+        .pillar:nth-child(3) .pillar-icon { background: rgba(139,92,246,0.12); }
+        .pillar:nth-child(4) .pillar-icon { background: rgba(245,158,11,0.12); }
+
+        .pillar h4 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .pillar p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Amazon section — flow diagram */
+        .flow-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 40px 0;
+        }
+
+        .flow-node {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px 24px;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .flow-node .icon {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+        }
+
+        .flow-node .title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .flow-node .desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .flow-arrow {
+            font-size: 1.4rem;
+            color: var(--accent);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+            margin-top: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 14px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 36px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -33px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 3px solid var(--bg);
+        }
+
+        .timeline-item h4 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .timeline-item p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Highlight list */
+        .highlight-list {
+            list-style: none;
+            margin: 24px 0 0 0;
+        }
+
+        .highlight-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.98rem;
+        }
+
+        .highlight-list li:last-child {
+            border-bottom: none;
+        }
+
+        .highlight-list .bullet {
+            flex-shrink: 0;
+            width: 8px;
+            height: 8px;
+            margin-top: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        /* Two column layout */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .two-col { grid-template-columns: 1fr; }
+            .content-block { padding: 28px 20px; }
+            .flow-arrow { display: none; }
+            .flow-container { flex-direction: column; }
+        }
+
+        .info-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px 28px;
+        }
+
+        .info-card h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .info-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 0;
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer .brand {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        /* Fade-in animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+
+    <!-- Hero -->
+    <header class="hero">
+        <div class="hero-badge">
+            <span class="dot"></span>
+            Global Digital Economy
+        </div>
+        <h1>The Digital Economy in<br><span class="gradient">Global Diffusion</span></h1>
+        <p class="hero-sub">
+            How digital technologies, e-commerce platforms, and cross-border data flows are reshaping the spread of goods, services, knowledge, and economic opportunity across nations.
+        </p>
+        <div class="hero-stats">
+            <div class="stat-card">
+                <div class="num">$6.3T</div>
+                <div class="label">Global E-Commerce</div>
+            </div>
+            <div class="stat-card">
+                <div class="num">5.5B</div>
+                <div class="label">Internet Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="num">830M+</div>
+                <div class="label">Cross-Border Shoppers</div>
+            </div>
+            <div class="stat-card">
+                <div class="num">300+</div>
+                <div class="label">Digital Trade Agreements</div>
+            </div>
+        </div>
+        <div class="scroll-hint">
+            <span>Scroll to explore</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M5 12l7 7 7-7"/>
+            </svg>
+        </div>
+    </header>
+
+    <!-- Section 1: What is the Digital Economy -->
+    <section>
+        <div class="container">
+            <div class="fade-in">
+                <div class="section-label"><span class="line"></span> Foundation</div>
+                <h2>What Is the Digital Economy?</h2>
+                <p class="section-intro">
+                    The digital economy encompasses all economic activity that relies on digital technologies as a fundamental driver of value creation, exchange, and distribution.
+                </p>
+            </div>
+            <div class="content-block fade-in">
+                <h3>A New Economic Architecture</h3>
+                <p>
+                    The digital economy is not simply a sector of the broader economy&mdash;it is a structural transformation of how economic activity is organized worldwide. It encompasses the production, sale, and distribution of goods and services through digital channels, powered by internet connectivity, cloud computing, artificial intelligence, and mobile technology. From a small artisan in Southeast Asia selling handcrafted goods on an e-commerce platform to a multinational corporation managing real-time supply chains across continents, the digital economy redefines how value is created, captured, and distributed.
+                </p>
+                <p>
+                    At its core, the digital economy lowers barriers to entry, compresses distances between markets, and enables transactions and knowledge exchange at speeds that were unimaginable just decades ago. It transforms traditional trade patterns by allowing participants at every economic level to connect directly with global markets, shifting the geography of economic opportunity.
+                </p>
+            </div>
+            <div class="pillar-grid fade-in">
+                <div class="pillar">
+                    <div class="pillar-icon">&#9889;</div>
+                    <h4>Digital Infrastructure</h4>
+                    <p>Broadband networks, cloud computing, data centers, and mobile connectivity form the backbone that enables digital economic activity across borders.</p>
+                </div>
+                <div class="pillar">
+                    <div class="pillar-icon">&#128722;</div>
+                    <h4>E-Commerce Platforms</h4>
+                    <p>Marketplaces like Amazon, Alibaba, and Shopify connect producers directly with global consumers, removing traditional intermediaries and geographic constraints.</p>
+                </div>
+                <div class="pillar">
+                    <div class="pillar-icon">&#128202;</div>
+                    <h4>Cross-Border Data Flows</h4>
+                    <p>The movement of data across national boundaries enables financial transactions, supply chain coordination, remote services, and the diffusion of knowledge at global scale.</p>
+                </div>
+                <div class="pillar">
+                    <div class="pillar-icon">&#128666;</div>
+                    <h4>Global Logistics Networks</h4>
+                    <p>Digitally optimized shipping, warehousing, and fulfillment systems transform how physical goods move, enabling rapid and cost-effective international delivery.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Section 2: How Digital Tech Drives Global Diffusion -->
+    <section>
+        <div class="container">
+            <div class="fade-in">
+                <div class="section-label"><span class="line"></span> Mechanisms</div>
+                <h2>How Digital Technologies Drive Global Diffusion</h2>
+                <p class="section-intro">
+                    Digital technologies accelerate the spread of goods, services, knowledge, and economic development through several interconnected mechanisms.
+                </p>
+            </div>
+
+            <div class="content-block fade-in">
+                <h3>Eliminating Geographic Barriers</h3>
+                <p>
+                    Before the digital economy, global trade was dominated by large corporations with the resources to navigate complex international logistics, regulatory frameworks, and distribution channels. Digital platforms have fundamentally changed this dynamic. A manufacturer in rural India can now list products on a global marketplace, accept payments in dozens of currencies, and arrange international shipping&mdash;all through a smartphone. This democratization of global trade access is one of the most powerful diffusion mechanisms in history.
+                </p>
+                <p>
+                    Cloud-based tools for communication, project management, and financial services mean that businesses no longer need a physical presence in foreign markets to serve them. Software-as-a-Service (SaaS) products deliver enterprise-grade capabilities to startups in emerging economies for a fraction of what they once cost, leveling the competitive landscape and enabling firms worldwide to participate in global value chains.
+                </p>
+            </div>
+
+            <div class="content-block fade-in">
+                <h3>Accelerating Knowledge and Innovation Transfer</h3>
+                <p>
+                    The digital economy is not limited to the exchange of physical goods. Perhaps its most profound contribution to global diffusion is the rapid spread of knowledge, ideas, and innovation. Open-source software, online education platforms, digital research repositories, and collaborative tools allow innovations developed in one part of the world to be adopted and adapted anywhere with internet access.
+                </p>
+                <p>
+                    Remote work platforms and digital collaboration tools enable multinational teams to co-develop products and share expertise in real time. This accelerates technology transfer to developing nations, which can adopt best practices without the decades-long learning curves that characterized earlier waves of industrialization. The result is a compression of development timelines&mdash;countries and communities can leapfrog legacy infrastructure and move directly to modern digital systems.
+                </p>
+            </div>
+
+            <div class="content-block fade-in">
+                <h3>Enabling Cross-Border Service Delivery</h3>
+                <p>
+                    Digital infrastructure has made it possible to deliver services across borders that once required physical proximity. Software development, customer support, design, consulting, medical diagnostics, education, and financial services can all be delivered remotely. This has created entirely new export categories for developing nations, enabling countries with strong human capital but limited manufacturing capacity to participate in the global economy through service exports.
+                </p>
+                <p>
+                    The rise of digital payment systems, including mobile money platforms prevalent in Sub-Saharan Africa and Southeast Asia, has further integrated underserved populations into the global financial system. These systems reduce transaction costs, increase financial inclusion, and create the trust infrastructure necessary for cross-border economic participation.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Section 3: E-Commerce & Global Trade -->
+    <section>
+        <div class="container">
+            <div class="fade-in">
+                <div class="section-label"><span class="line"></span> E-Commerce</div>
+                <h2>E-Commerce as the Engine of Global Trade Integration</h2>
+                <p class="section-intro">
+                    E-commerce platforms serve as the primary interface through which the digital economy connects global producers, consumers, and supply chains.
+                </p>
+            </div>
+
+            <div class="content-block fade-in">
+                <h3>Restructuring Global Supply Chains</h3>
+                <p>
+                    E-commerce platforms have restructured how supply chains operate at a global level. Traditional supply chains were linear and opaque&mdash;goods moved from manufacturer to wholesaler to distributor to retailer. Digital platforms compress these chains, often connecting producers directly with end consumers while providing the logistics, payment processing, and customer service infrastructure that makes such direct connections viable at scale.
+                </p>
+                <p>
+                    This restructuring has profound implications for global diffusion. Producers in emerging economies gain direct access to consumers in wealthy markets, capturing a larger share of value. At the same time, consumers in developing nations gain access to a wider range of goods at competitive prices. The net effect is a more interconnected global marketplace where trade flows more freely and efficiently.
+                </p>
+            </div>
+
+            <div class="content-block fade-in">
+                <h3>The Role of Data in Market Integration</h3>
+                <p>
+                    Behind every e-commerce transaction lies a vast data infrastructure that coordinates inventory management, demand forecasting, logistics routing, and personalized recommendations. Cross-border data flows are the circulatory system of the digital economy. They enable real-time coordination between suppliers in one country, fulfillment centers in another, and consumers in a third.
+                </p>
+                <p>
+                    This data-driven coordination reduces waste, lowers costs, and increases the speed of international commerce. Predictive analytics allow platforms to pre-position inventory in anticipation of demand, while machine learning algorithms optimize shipping routes across global logistics networks. The result is a trade system that is faster, more responsive, and more efficient than anything that preceded it.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Section 4: Amazon Case Study -->
+    <section>
+        <div class="container">
+            <div class="fade-in">
+                <div class="section-label"><span class="line"></span> Case Study</div>
+                <h2>Amazon as Global Distribution Infrastructure</h2>
+                <p class="section-intro">
+                    Amazon illustrates how a single platform can function as comprehensive global distribution infrastructure, accelerating trade and market integration worldwide.
+                </p>
+            </div>
+
+            <div class="flow-container fade-in">
+                <div class="flow-node">
+                    <div class="icon">&#127981;</div>
+                    <div class="title">Global Producers</div>
+                    <div class="desc">Manufacturers & sellers in 180+ countries</div>
+                </div>
+                <div class="flow-arrow">&#10230;</div>
+                <div class="flow-node">
+                    <div class="icon">&#128300;</div>
+                    <div class="title">Amazon Platform</div>
+                    <div class="desc">Marketplace, data analytics & AI matching</div>
+                </div>
+                <div class="flow-arrow">&#10230;</div>
+                <div class="flow-node">
+                    <div class="icon">&#128230;</div>
+                    <div class="title">Fulfillment Network</div>
+                    <div class="desc">400+ fulfillment centers across 20+ nations</div>
+                </div>
+                <div class="flow-arrow">&#10230;</div>
+                <div class="flow-node">
+                    <div class="icon">&#127758;</div>
+                    <div class="title">Global Consumers</div>
+                    <div class="desc">Hundreds of millions of buyers worldwide</div>
+                </div>
+            </div>
+
+            <div class="content-block fade-in">
+                <h3>A Multi-Layered Diffusion Engine</h3>
+                <p>
+                    Amazon operates far beyond a simple online storefront. It functions as a multi-layered infrastructure system that facilitates global diffusion across several dimensions simultaneously. As a marketplace, it connects millions of third-party sellers&mdash;many of them small and medium enterprises in developing nations&mdash;with consumers in major markets worldwide. Through its Fulfillment by Amazon (FBA) program, sellers can ship inventory to Amazon's global network of warehouses, and Amazon handles storage, packaging, shipping, and customer service.
+                </p>
+                <p>
+                    This model dramatically lowers the barrier to international trade. A small manufacturer in Shenzhen, a craft cooperative in Kenya, or a software developer in Eastern Europe can reach customers in North America and Western Europe without building any international distribution infrastructure of their own. Amazon effectively provides a turnkey global trade capability that was once available only to major multinational corporations.
+                </p>
+            </div>
+
+            <div class="content-block fade-in">
+                <h3>Amazon Web Services and Digital Diffusion</h3>
+                <p>
+                    Beyond physical commerce, Amazon Web Services (AWS) represents another critical dimension of global diffusion. AWS provides cloud computing infrastructure to businesses, governments, and organizations in over 190 countries. By making enterprise-grade computing power available on a pay-as-you-go basis, AWS enables startups in Lagos, Bangalore, or S&atilde;o Paulo to build and scale digital services without massive upfront capital investment.
+                </p>
+                <p>
+                    This democratization of computing infrastructure accelerates innovation diffusion by giving developers and entrepreneurs everywhere access to the same tools and capabilities available in Silicon Valley. The result is a more geographically distributed innovation landscape, where new products, services, and business models can emerge from any connected location on the planet.
+                </p>
+            </div>
+
+            <div class="content-block fade-in">
+                <h3>Logistics and Last-Mile Innovation</h3>
+                <p>
+                    Amazon's investments in logistics infrastructure&mdash;including its own air cargo fleet, last-mile delivery networks, and advanced robotics in fulfillment centers&mdash;push the boundaries of how quickly and efficiently goods can move across borders. These innovations create positive externalities for the broader economy: as Amazon builds logistics infrastructure in new markets, it raises the baseline capability for all e-commerce and trade activity in those regions.
+                </p>
+                <p>
+                    The company's development of advanced supply chain technologies, from predictive inventory management to drone delivery research, also generates knowledge spillovers. Competitors and partners alike adopt and adapt these innovations, further accelerating the diffusion of logistics capabilities across the global economy.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Section 5: Challenges & Digital Divide -->
+    <section>
+        <div class="container">
+            <div class="fade-in">
+                <div class="section-label"><span class="line"></span> Challenges</div>
+                <h2>Challenges and the Digital Divide</h2>
+                <p class="section-intro">
+                    While the digital economy accelerates global diffusion, its benefits are not distributed equally. Structural barriers continue to shape who participates and who is left behind.
+                </p>
+            </div>
+
+            <div class="two-col fade-in">
+                <div class="info-card">
+                    <h4>Infrastructure Gaps</h4>
+                    <p>Reliable broadband, consistent electricity, and affordable devices remain unavailable to billions. Without these fundamentals, entire communities are excluded from the digital economy, widening rather than narrowing global inequality.</p>
+                </div>
+                <div class="info-card">
+                    <h4>Regulatory Fragmentation</h4>
+                    <p>Divergent national regulations on data privacy, digital taxation, and platform governance create compliance costs that disproportionately burden smaller firms and developing economies seeking to participate in cross-border digital trade.</p>
+                </div>
+                <div class="info-card">
+                    <h4>Market Concentration</h4>
+                    <p>A handful of technology firms headquartered in the United States and China control the platforms, cloud infrastructure, and data ecosystems that underpin the digital economy. This concentration raises concerns about dependency and the equitable distribution of digital gains.</p>
+                </div>
+                <div class="info-card">
+                    <h4>Digital Literacy</h4>
+                    <p>Access to technology alone is insufficient. Meaningful participation in the digital economy requires digital skills, business literacy, and the ability to navigate complex platform ecosystems&mdash;capabilities that require sustained investment in education and training.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Section 6: Future Outlook -->
+    <section>
+        <div class="container">
+            <div class="fade-in">
+                <div class="section-label"><span class="line"></span> Looking Ahead</div>
+                <h2>The Future of Digital Global Diffusion</h2>
+                <p class="section-intro">
+                    Several emerging trends will shape how the digital economy continues to drive global diffusion in the coming decades.
+                </p>
+            </div>
+
+            <div class="timeline fade-in">
+                <div class="timeline-item">
+                    <h4>Artificial Intelligence and Automation</h4>
+                    <p>AI-powered tools for translation, logistics optimization, quality control, and customer service are further reducing the frictions in cross-border trade. Automated supply chains will enable faster, more efficient global commerce, while AI-driven market intelligence helps businesses identify and serve international demand.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Decentralized Technologies</h4>
+                    <p>Blockchain and distributed ledger technologies promise to reduce reliance on centralized intermediaries for cross-border payments, contract enforcement, and supply chain verification. These systems could lower transaction costs and increase trust in international commerce, particularly for participants in economies with weaker institutional infrastructure.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Digital Trade Agreements</h4>
+                    <p>Governments are increasingly negotiating digital trade agreements that establish common rules for data flows, digital taxation, and platform regulation. These frameworks, such as the Digital Economy Partnership Agreement (DEPA), aim to create predictable, interoperable regulatory environments that facilitate cross-border digital commerce.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Expanding Connectivity</h4>
+                    <p>Satellite internet constellations, 5G networks, and continued investment in terrestrial broadband are extending connectivity to previously underserved regions. As more of the world's population comes online, the potential base for digital economic participation expands dramatically, bringing new producers, consumers, and innovators into the global digital economy.</p>
+                </div>
+                <div class="timeline-item">
+                    <h4>Sustainable Digital Commerce</h4>
+                    <p>Growing attention to the environmental impact of global logistics and data infrastructure is driving innovation in sustainable shipping, green data centers, and circular economy platforms. The challenge ahead is to sustain the diffusion benefits of the digital economy while reducing its ecological footprint.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Conclusion -->
+    <section>
+        <div class="container">
+            <div class="fade-in">
+                <div class="section-label"><span class="line"></span> Conclusion</div>
+                <h2>A Transformed Global Landscape</h2>
+            </div>
+            <div class="content-block fade-in">
+                <p>
+                    The digital economy has become the primary engine of global diffusion in the twenty-first century. Through e-commerce platforms, digital infrastructure, cross-border data flows, and global logistics networks, digital technologies are accelerating the spread of goods, services, knowledge, and economic opportunity across national boundaries at an unprecedented pace.
+                </p>
+                <p>
+                    Platforms like Amazon demonstrate how digital infrastructure can function as a comprehensive global distribution system, connecting producers and consumers across continents, reducing barriers to trade, and enabling participants of all sizes to engage in international commerce. From cloud computing to last-mile delivery, these platforms compress the complexity of global trade into accessible, scalable systems.
+                </p>
+                <p>
+                    Yet the promise of the digital economy as a force for equitable global diffusion remains contingent on addressing persistent challenges: infrastructure gaps, regulatory fragmentation, market concentration, and digital literacy deficits. The extent to which the digital economy fulfills its potential as a tool for broadly shared global development will depend on deliberate investments in connectivity, education, and inclusive governance frameworks that ensure its benefits reach beyond the already connected.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="brand">The Digital Economy in Global Diffusion</div>
+            <p>&copy; 2026 &mdash; An educational resource on the role of digital technologies in global economic integration.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer for fade-in animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
